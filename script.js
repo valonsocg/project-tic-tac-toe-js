@@ -1,39 +1,4 @@
-// 2d Array Board
-
-// const board = [
-//   ["", "", ""],
-//   ["", "", ""],
-//   ["", "", ""],
-// ];
-
-// function renderGame() {
-//   const gameBoard = document.querySelector(".gameBoard");
-//   gameBoard.innerHTML = "";
-
-//   board.forEach((row, rowIndex) => {
-//     row.forEach((cell, colIndex) => {
-//       const cellDiv = document.createElement("div");
-//       cellDiv.className = "cell";
-//       cellDiv.textContent = cell;
-//       cellDiv.addEventListener("click", () => handleClick(rowIndex, colIndex));
-//       gameBoard.appendChild(cellDiv);
-//     });
-//   });
-// }
-
-// function handleClick(rowIndex, colIndex) {
-//   if (board[rowIndex][colIndex] === "") {
-//     board[rowIndex][colIndex] = "X";
-//   }
-//   renderGame();
-// }
-
-// renderGame();
-
 // 1D array board
-
-const startBtn = document.querySelector("#start");
-startBtn.addEventListener("click", () => GameController.start());
 
 const Gameboard = (() => {
   const board = ["", "", "", "", "", "", "", "", ""];
@@ -80,10 +45,27 @@ const GameController = (() => {
     Gameboard.renderGame();
   }
 
+  function reset() {
+    for (let i = 0; i < 9; i++) {
+      Gameboard.update(i, "");
+    }
+    gameOver = false;
+    activePlayer = players[0];
+    Gameboard.renderGame();
+  }
+
   function handleClick(index) {
     if (Gameboard.board[index] === "") {
       Gameboard.update(index, activePlayer.mark);
-      switchPlayerTurn();
+      if (checkWinner(Gameboard.board, activePlayer.mark)) {
+        alert(`${activePlayer.mark} won!`);
+        gameOver = true;
+      } else if (checkTie(Gameboard.board)) {
+        alert("draw!");
+        gameOver = true;
+      } else {
+        switchPlayerTurn();
+      }
     }
     Gameboard.renderGame();
   }
@@ -92,11 +74,39 @@ const GameController = (() => {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
   }
 
-  // function getActivePlayer() {
-  //   activePlayer;
-  // }
-
   const getActivePlayer = () => activePlayer;
 
-  return { start, handleClick, switchPlayerTurn, getActivePlayer };
+  return { start, handleClick, switchPlayerTurn, getActivePlayer, reset };
 })();
+
+function checkWinner(board, mark) {
+  const winningCombos = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  for (const combo of winningCombos) {
+    const [a, b, c] = combo;
+    if (board[a] === mark && board[b] === mark && board[c] === mark) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkTie(board) {
+  return board.every((cell) => cell !== "");
+}
+
+const startBtn = document.querySelector("#start");
+startBtn.addEventListener("click", () => GameController.start());
+
+//reset button
+const resetBtn = document.querySelector("#reset");
+resetBtn.addEventListener("click", () => GameController.reset());
