@@ -85,9 +85,7 @@ const GameController = (() => {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
   }
 
-  const getActivePlayer = () => activePlayer;
-
-  return { start, handleClick, switchPlayerTurn, getActivePlayer, reset };
+  return { start, handleClick, switchPlayerTurn, reset };
 })();
 
 //Manage message div
