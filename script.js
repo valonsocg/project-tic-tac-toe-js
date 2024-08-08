@@ -11,6 +11,11 @@ const Gameboard = (() => {
       const cellDiv = document.createElement("div");
       cellDiv.className = "cell";
       cellDiv.textContent = cell;
+      if (cell === "X") {
+        cellDiv.classList.add("x");
+      } else if (cell === "O") {
+        cellDiv.classList.add("o");
+      }
       cellDiv.addEventListener("click", () =>
         GameController.handleClick(index)
       );
@@ -60,6 +65,9 @@ const GameController = (() => {
   function handleClick(index) {
     if (Gameboard.board[index] === "" && gameOver === false) {
       Gameboard.update(index, activePlayer.mark);
+      const cell = document.querySelectorAll(".cell")[index];
+      cell.classList.add(activePlayer.mark.toLowerCase());
+
       if (checkWinner(Gameboard.board, activePlayer.mark)) {
         DisplayController.renderMessage(`${activePlayer.name} won!`);
         gameOver = true;
@@ -91,7 +99,7 @@ const DisplayController = (() => {
   return { renderMessage };
 })();
 
-//check wiiner
+//check winner
 
 function checkWinner(board, mark) {
   const winningCombos = [
