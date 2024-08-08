@@ -1,4 +1,4 @@
-// 1D array board
+// create 1D array board render and update
 
 const Gameboard = (() => {
   const board = ["", "", "", "", "", "", "", "", ""];
@@ -31,6 +31,8 @@ function createPlayer(name, mark) {
   return { name, mark };
 }
 
+//Manage game functions
+
 const GameController = (() => {
   let players = [];
   let gameOver;
@@ -51,17 +53,18 @@ const GameController = (() => {
     }
     gameOver = false;
     activePlayer = players[0];
+    DisplayController.renderMessage("");
     Gameboard.renderGame();
   }
 
   function handleClick(index) {
-    if (Gameboard.board[index] === "") {
+    if (Gameboard.board[index] === "" && gameOver === false) {
       Gameboard.update(index, activePlayer.mark);
       if (checkWinner(Gameboard.board, activePlayer.mark)) {
-        alert(`${activePlayer.mark} won!`);
+        DisplayController.renderMessage(`${activePlayer.name} won!`);
         gameOver = true;
       } else if (checkTie(Gameboard.board)) {
-        alert("draw!");
+        DisplayController.renderMessage("It's a tie!");
         gameOver = true;
       } else {
         switchPlayerTurn();
@@ -78,6 +81,17 @@ const GameController = (() => {
 
   return { start, handleClick, switchPlayerTurn, getActivePlayer, reset };
 })();
+
+//Manage message div
+
+const DisplayController = (() => {
+  function renderMessage(message) {
+    document.querySelector(".message").textContent = message;
+  }
+  return { renderMessage };
+})();
+
+//check wiiner
 
 function checkWinner(board, mark) {
   const winningCombos = [
@@ -100,6 +114,7 @@ function checkWinner(board, mark) {
   return false;
 }
 
+//check tie
 function checkTie(board) {
   return board.every((cell) => cell !== "");
 }
