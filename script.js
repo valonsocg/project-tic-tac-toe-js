@@ -83,8 +83,8 @@ const GameController = (() => {
   function handleClick(index) {
     if (Gameboard.board[index] === "") {
       Gameboard.update(index, activePlayer.mark);
+      switchPlayerTurn();
     }
-    switchPlayerTurn();
     Gameboard.renderGame();
   }
 
